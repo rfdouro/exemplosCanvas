@@ -3,123 +3,169 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Relógio</title>
+    <title>Exemplos Canvas</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
     <style>
-      #relogio {
+      html,
+      body,
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-family: "Roboto", sans-serif;
+      }
+
+      header,
+      main,
+      footer {
+        padding-left: 300px;
+      }
+
+      @media only screen and (max-width: 992px) {
+        header,
+        main,
+        footer {
+          padding-left: 0;
+        }
+      }
+
+      #conteudo {
         position: fixed;
         width: 100%;
         height: 100%;
-        background-color: aqua;
+        background-color: rgb(161, 221, 221);
         display: flex;
         justify-content: center;
         align-items: center;
       }
-      #relogio canvas {
-        position: absolute;
-        top: 50%;
-        transform: translate(0, -50%);
-        width: 50%;
-        height: 50%;
-        border: solid red 2px;
-      }
     </style>
   </head>
   <body>
-    <div id="relogio">
-      <canvas></canvas>
+    <div id="app">
+      <nav>
+        <div class="nav-wrapper blue darken-2">
+          <a href="#" class="brand-logo">Exemplos Canvas</a>
+          <a href="#" data-target="slide-out" class="sidenav-trigger"
+            ><i class="fa fa-2x fa-bars"></i></a
+          >
+          <!--
+          <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li><a href="sass.html">Sass</a></li>
+            <li><a href="badges.html">Components</a></li>
+            <li><a href="collapsible.html">JavaScript</a></li>
+          </ul>
+          -->
+        </div>
+      </nav>
+
+      <ul id="slide-out" class="sidenav sidenav-fixed">
+        <li>
+          <div class="user-view">
+            <div class="background">
+              <img
+                src="https://img.freepik.com/free-vector/paper-style-white-monochrome-background_52683-66443.jpg?w=996&t=st=1693418820~exp=1693419420~hmac=5e3e66ac14c1f42df4fd32b0b40f30303ecdbb37bfa11c115c397189ec8d3a46"
+              />
+            </div>
+            <a href="#user"
+              ><img
+                class="circle"
+                src="https://avatars.githubusercontent.com/u/28950782?v=4"
+            /></a>
+            <a href="#name"
+              ><span class="blue-text text-darken-2 name">Rômulo F. Douro</span></a
+            >
+            <a href="#email"
+              ><span class="blue-text text-darken-2 email"
+                >rfdouro@gmail.com</span
+              ></a
+            >
+          </div>
+        </li>
+        <li>
+          <hr/>
+          <a class="subheader text-blue text-darken-2">Exemplos Canvas</a>
+          <hr/>
+        </li>
+        <li>
+          <a href="#!" @click="navega({pagina:'relogio.html', div:'conteudo'})"
+            ><i class="fa fa-clock-o fa-2x"></i>Relógio</a
+          >
+        </li>
+      </ul>
+
+      <main id="conteudo">
+
+      </main>
     </div>
     <script>
       Vue.createApp({
         data() {
           return {
-            tela: null,
-            context: null,
-            w: 400,
-            h: 400,
-            raio: 180,
-            centro: [0, 0],
-            imgFundo: new Image(),
+            pagina: null,
           };
         },
         mounted() {
-          console.log(this.$el);
-          this.$el.width = this.w;
-          this.$el.height = this.h;
-          this.centro = [this.w / 2, this.h / 2];
-          this.context = this.$el.getContext("2d");
-          this.imgFundo.src = "fundo.png";
-          let desenha = this.desenha;
-          this.imgFundo.onload = function () {
-            window.requestAnimationFrame(desenha);
-          };
+          $(".sidenav").sidenav();
         },
         methods: {
-          desenha() {
-            this.context.clearRect(0, 0, this.w, this.h);
-            this.desenhaFundo();
-            let d = new Date();
-            this.desenhaContorno();
-            this.desenhaSegundos((d.getSeconds() * 6 * Math.PI) / 180);
-            let minutos = d.getMinutes() + d.getSeconds() / 60;
-            this.desenhaMinutos((minutos * 6 * Math.PI) / 180);
-            let horas = (d.getHours() % 12) * 30 + minutos / 2;
-            this.desenhaHora((horas * Math.PI) / 180);
-            requestAnimationFrame(this.desenha);
+          navega: function (obj, update) {
+            if (obj == null) return;
+            var _this = this;
+            _this.showSplash();
+
+            this.pagina = obj.pagina;
+
+            if (!obj.div)
+              $.get(obj.pagina, null, function (dados) {
+                alert(dados);
+              });
+            else {
+              $.ajax(obj.pagina, {
+                type: "GET",
+                async: true,
+                success: function (data, status, xhr) {
+                  if (status == "success") {
+                    obj.titulo = !obj.titulo ? "" : obj.titulo;
+                    update = update == null ? true : update;
+                    //document.title = obj.titulo;
+                    //usando JQuery
+                    $("#" + obj.div).html(data);
+                    if (update === true) {
+                      history.pushState(obj, "", ""); //deve-se usar assim para não alterar a barra de endereços do browser
+                    }
+                  }
+                  _this.hideSplash();
+                },
+              });
+            }
           },
-          desenhaFundo() {
-            this.context.save();
-            this.context.drawImage(this.imgFundo, 0, 0, 400, 400);
-            this.context.restore();
+          showSplash() {
+            //$("#splash").show();
+            $("#splash").fadeIn("fast");
           },
-          desenhaContorno() {
-            this.context.save();
-            this.context.beginPath();
-            this.context.arc(this.w / 2, this.h / 2, this.raio, 0, Math.PI * 2);
-            this.context.strokeStyle = "green";
-            this.context.lineWidth = 3;
-            this.context.stroke();
-            this.context.restore();
-          },
-          desenhaSegundos(seg) {
-            this.context.save();
-            this.context.beginPath();
-            this.context.translate(this.centro[0], this.centro[1]);
-            this.context.rotate(seg);
-            this.context.moveTo(0, 0);
-            this.context.lineWidth = 3;
-            this.context.strokeStyle = "white";
-            this.context.lineTo(0, -200);
-            this.context.stroke();
-            this.context.restore();
-          },
-          desenhaMinutos(min) {
-            this.context.save();
-            this.context.beginPath();
-            this.context.translate(this.centro[0], this.centro[1]);
-            this.context.rotate(min);
-            this.context.moveTo(0, 0);
-            this.context.lineWidth = 6;
-            this.context.strokeStyle = "red";
-            this.context.lineTo(0, -180);
-            this.context.stroke();
-            this.context.restore();
-          },
-          desenhaHora(hor) {
-            this.context.save();
-            this.context.beginPath();
-            this.context.translate(this.centro[0], this.centro[1]);
-            this.context.rotate(hor);
-            this.context.moveTo(0, 0);
-            this.context.lineWidth = 9;
-            this.context.strokeStyle = "blue";
-            this.context.lineTo(0, -150);
-            this.context.stroke();
-            this.context.restore();
+          hideSplash() {
+            //$("#splash").hide();
+            $("#splash").fadeOut("slow");
           },
         },
-      }).mount("#relogio");
+      }).mount("#app");
     </script>
   </body>
 </html>

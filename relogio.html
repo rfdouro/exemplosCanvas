@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Relógio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+      #relogio {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        background-color: aqua;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      #relogio canvas {
+        position: absolute;
+        top: 50%;
+        transform: translate(0, -50%);
+        width: 50%;
+        height: 50%;
+        border: solid red 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="relogio">
+      <canvas></canvas>
+    </div>
+    <script>
+      Vue.createApp({
+        data() {
+          return {
+            tela: null,
+            context: null,
+            w: 400,
+            h: 400,
+            raio: 180,
+            centro: [0, 0],
+            imgFundo: new Image(),
+          };
+        },
+        mounted() {
+          console.log(this.$el);
+          this.$el.width = this.w;
+          this.$el.height = this.h;
+          this.centro = [this.w / 2, this.h / 2];
+          this.context = this.$el.getContext("2d");
+          this.imgFundo.src = "fundo.png";
+          let desenha = this.desenha;
+          this.imgFundo.onload = function () {
+            window.requestAnimationFrame(desenha);
+          };
+        },
+        methods: {
+          desenha() {
+            this.context.clearRect(0, 0, this.w, this.h);
+            this.desenhaFundo();
+            let d = new Date();
+            this.desenhaContorno();
+            this.desenhaSegundos((d.getSeconds() * 6 * Math.PI) / 180);
+            let minutos = d.getMinutes() + d.getSeconds() / 60;
+            this.desenhaMinutos((minutos * 6 * Math.PI) / 180);
+            let horas = (d.getHours() % 12) * 30 + minutos / 2;
+            this.desenhaHora((horas * Math.PI) / 180);
+            requestAnimationFrame(this.desenha);
+          },
+          desenhaFundo() {
+            this.context.save();
+            this.context.drawImage(this.imgFundo, 0, 0, 400, 400);
+            this.context.restore();
+          },
+          desenhaContorno() {
+            this.context.save();
+            this.context.beginPath();
+            this.context.arc(this.w / 2, this.h / 2, this.raio, 0, Math.PI * 2);
+            this.context.strokeStyle = "green";
+            this.context.lineWidth = 3;
+            this.context.stroke();
+            this.context.restore();
+          },
+          desenhaSegundos(seg) {
+            this.context.save();
+            this.context.beginPath();
+            this.context.translate(this.centro[0], this.centro[1]);
+            this.context.rotate(seg);
+            this.context.moveTo(0, 0);
+            this.context.lineWidth = 3;
+            this.context.strokeStyle = "white";
+            this.context.lineTo(0, -200);
+            this.context.stroke();
+            this.context.restore();
+          },
+          desenhaMinutos(min) {
+            this.context.save();
+            this.context.beginPath();
+            this.context.translate(this.centro[0], this.centro[1]);
+            this.context.rotate(min);
+            this.context.moveTo(0, 0);
+            this.context.lineWidth = 6;
+            this.context.strokeStyle = "red";
+            this.context.lineTo(0, -180);
+            this.context.stroke();
+            this.context.restore();
+          },
+          desenhaHora(hor) {
+            this.context.save();
+            this.context.beginPath();
+            this.context.translate(this.centro[0], this.centro[1]);
+            this.context.rotate(hor);
+            this.context.moveTo(0, 0);
+            this.context.lineWidth = 9;
+            this.context.strokeStyle = "blue";
+            this.context.lineTo(0, -150);
+            this.context.stroke();
+            this.context.restore();
+          },
+        },
+      }).mount("#relogio");
+    </script>
+  </body>
+</html>
