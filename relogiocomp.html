@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Relógio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="relogiocomp.js"></script>
+    <style>
+      #relogio {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        background-color: rgb(192, 220, 220);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      #relogio canvas {
+        position: absolute;
+        top: 50%;
+        transform: translate(0, -50%);
+        width: 50%;
+        height: 50%;
+        border: solid red 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="relogio">
+      <r-relogio
+        :width="400"
+        :height="400"
+        :raio="200"
+        bkgimg="fundo"
+      ></r-relogio>
+    </div>
+    <script>
+      Vue.createApp({
+        components: {
+          rRelogio,
+        },
+      }).mount("#relogio");
+    </script>
+  </body>
+</html>

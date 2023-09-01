@@ -63,8 +63,8 @@
         <div class="nav-wrapper blue darken-2">
           <a href="#" class="brand-logo">Exemplos Canvas</a>
           <a href="#" data-target="slide-out" class="sidenav-trigger"
-            ><i class="fa fa-2x fa-bars"></i></a
-          >
+            ><i class="fa fa-2x fa-bars"></i
+          ></a>
           <!--
           <ul id="nav-mobile" class="right hide-on-med-and-down">
             <li><a href="sass.html">Sass</a></li>
@@ -89,7 +89,9 @@
                 src="https://avatars.githubusercontent.com/u/28950782?v=4"
             /></a>
             <a href="#name"
-              ><span class="blue-text text-darken-2 name">Rômulo F. Douro</span></a
+              ><span class="blue-text text-darken-2 name"
+                >Rômulo F. Douro</span
+              ></a
             >
             <a href="#email"
               ><span class="blue-text text-darken-2 email"
@@ -99,30 +101,46 @@
           </div>
         </li>
         <li>
-          <hr/>
+          <hr />
           <a class="subheader text-blue text-darken-2">Exemplos Canvas</a>
-          <hr/>
+          <hr />
         </li>
         <li>
-          <a href="#!" @click="navega({pagina:'relogio.html', div:'conteudo'})"
+          <a
+            href="#!"
+            @click="navega({pagina:'relogio.html', div:'conteudo'}, true)"
             ><i class="fa fa-clock-o fa-2x"></i>Relógio</a
+          >
+        </li>
+        <li>
+          <a
+            href="#!"
+            @click="navega({pagina:'relogiocomp.html', div:'conteudo'}, true)"
+            ><i class="fa fa-clock-o fa-2x"></i>Relógio - Componente</a
           >
         </li>
       </ul>
 
-      <main id="conteudo">
-
-      </main>
+      <main id="conteudo"></main>
     </div>
     <script>
       Vue.createApp({
         data() {
           return {
             pagina: null,
+            siden: null,
           };
         },
         mounted() {
           $(".sidenav").sidenav();
+          let _this = this;
+          //////////////////////////////
+          //navegação usando o browser
+          //////////////////////////////
+          window.onpopstate = function (oEvent) {
+            _this.navega(oEvent.state, false);
+          };
+          this.navega({ pagina: "relogio.html", div: "conteudo" });
         },
         methods: {
           navega: function (obj, update) {
